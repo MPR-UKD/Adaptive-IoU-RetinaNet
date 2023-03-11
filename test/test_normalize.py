@@ -22,5 +22,5 @@ def test_normalization():
     assert output["annot"] == expected_output["annot"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

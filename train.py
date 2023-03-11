@@ -1,6 +1,5 @@
-import os
 import platform
-import shutil
+from multiprocessing import Manager
 
 import pytorch_lightning as pl
 import torch
@@ -8,8 +7,6 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from torchvision import transforms
 
 from src import *
-
-from multiprocessing import Manager
 
 assert torch.__version__.split(".")[0] == "1"
 

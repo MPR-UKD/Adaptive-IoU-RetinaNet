@@ -19,8 +19,6 @@ from src.loss import FocalLoss
 from src.utils import one_hot_embedding
 from sklearn.metrics import average_precision_score
 
-from src.csv_dataset import load_dicom
-
 
 class Header(nn.Module):
     """
@@ -323,69 +321,6 @@ class RetinaNet(pl.LightningModule):
     def set_name(self, name):
         self.name = name
 
-    def predict(self, img, annont=None, org_img=None):
-        loc_preds, cls_preds = self(img)
-        loc_preds = loc_preds.detach().cpu()
-        cls_preds = [c.detach().cpu() for c in cls_preds]
-
-        predictions, ious, mAPs, acc, sum_true, sum_pred = [], [], [], [], [], []
-        for b in range(loc_preds.shape[0]):
-            c = [cls_preds[i][b].cpu() for i in range(len(self.n_cls))]
-            prediction = get_boxes(self.encoder, loc_preds[b], c, tuple(img.shape[-2:]))
-            predictions.append(prediction)
-            if annont is not None:
-                t = [
-                    one_hot_embedding(annont[b, 0, :, 4 + i].cpu(), self.n_cls[i])
-                    for i in range(len(self.n_cls))
-                ]
-                targets = get_boxes(
-                    self.encoder, annont[b, 0, :, :4], t, tuple(img.shape[-2:])
-                )
-                ious.append(calc_mean_iou(targets, prediction, cls_num=1))
-
-                _ = sort_pred_and_targets(targets, prediction, cls_num=1)
-                y_true = [__[0] for __ in _]
-                y_pred = [__[1] for __ in _]
-                sum_true.append(sum(y_true))
-                sum_pred.append(np.array(y_pred)[np.array(y_pred) >= 0].sum())
-                mAPs.append(calc_mAP(self.n_cls[1], y_true, y_pred))
-                acc.append(accuracy_score(y_true, y_pred))
-                fig, ax = plt.subplots()
-                # Display the image
-                img_org = load_dicom(org_img[b])
-                scale = np.array(img_org.shape) / np.array(img[b, 0].shape)
-                ax.imshow(img_org, cmap="gray")
-                ax.get_xaxis().set_visible(False)
-                ax.axes.get_yaxis().set_visible(False)
-                ax = draw_on_fig(ax, prediction[0] * scale[0], prediction[1], "r")
-                if not os.path.exists(self.name + os.sep + f"{b}.png"):
-                    plt.savefig(self.name + os.sep + f"{b}.png")
-
-                plt.close()
-                if not os.path.exists(
-                    r"C:\Users\ludge\Desktop\Images\gt" + os.sep + f"{b}.png"
-                ):
-                    targets = get_boxes(
-                        self.encoder, annont[b, 0, :, :4], t, tuple(img.shape[-2:])
-                    )
-                    fig, ax = plt.subplots()
-                    ax.imshow(img_org, cmap="gray")
-                    ax.get_xaxis().set_visible(False)
-                    ax.axes.get_yaxis().set_visible(False)
-                    ax = draw_on_fig(ax, targets[0] * scale[0], targets[1], "r")
-                    plt.savefig(
-                        r"C:\Users\ludge\Desktop\Images\gt" + os.sep + f"{b}.png"
-                    )
-                    plt.close()
-
-        return {
-            "boxes": predictions,
-            "ious": ious,
-            "mAPs": mAPs,
-            "accs": acc,
-            "sum_true": sum_true,
-            "sum_pred": sum_pred,
-        }
 
     def predict_step(self, batch, dataloader_idx):
         img, annont, org_img = batch["dcm"], batch["annot"], batch["dcm_file"]

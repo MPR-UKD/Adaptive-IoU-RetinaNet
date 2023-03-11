@@ -1,4 +1,4 @@
-torch
+torch==1.13.1
 argparse~=1.4.0
 torchvision
 matplotlib~=3.4.2

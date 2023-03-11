@@ -1,6 +1,5 @@
 import random
 from PIL import Image, ImageDraw
-#from torch.utils.data import Dataset
 from src.encoder import DataEncoder
 from typing import Callable, List, Dict, Union
 from src.config import Config

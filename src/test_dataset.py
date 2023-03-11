@@ -1,12 +1,13 @@
 import random
 from PIL import Image, ImageDraw
-from torch.utils.data import Dataset
+#from torch.utils.data import Dataset
 from src.encoder import DataEncoder
 from typing import Callable, List, Dict, Union
 from src.config import Config
 import numpy as np
 from copy import deepcopy
 import torch
+from src.dataset import Dataset
 
 
 class TestDataset(Dataset):
@@ -83,27 +84,8 @@ class TestDataset(Dataset):
         Returns:
             torch.Tensor: A tensor containing the transformed annotations for the sample.
         """
-        # Compute the positive and negative sample ratios based on the current epoch and adaptive epochs
-        pos_ratio = (
-            self.pos / self.adaptive_epochs * self.epoch["epoch"] + 0.001
-            if self.adaptive_epochs != 0
-            else self.pos
-        )
-        neg_ratio = (
-            self.neg / self.adaptive_epochs * self.epoch["epoch"]
-            if self.adaptive_epochs != 0
-            else self.neg
-        )
 
-        # Limit the positive and negative sample ratios to the maximum values
-        pos_ratio = pos_ratio if pos_ratio < self.pos else self.pos
-        neg_ratio = neg_ratio if neg_ratio < self.neg else self.neg
-
-        # Set a minimum positive sample ratio to avoid division by zero
-        pos_ratio = pos_ratio if pos_ratio > 0 else 0.05
-
-        # Ensure that the positive sample ratio is greater than the negative sample ratio
-        assert pos_ratio > neg_ratio
+        pos_ratio, neg_ratio = self.adaptive_iou()
 
         # Encode the annotations using the provided encoder
         boxes, targets_1 = self.encoder.encode(

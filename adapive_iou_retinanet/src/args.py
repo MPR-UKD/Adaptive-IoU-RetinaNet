@@ -61,6 +61,13 @@ def get_args_windows(args=None):
         type=int,
         default=100,
     )
+    parser.add_argument(
+        "-c",
+        "--copy_log_path",
+        help="",
+        type=str,
+        default="",
+    )
 
     return parser.parse_args(args)
 
@@ -107,21 +114,28 @@ def get_args_server(args=None):
         "--positive",
         help="if true -> test mode - default FALSE",
         type=float,
-        default=0.3,
+        default=0.5,
     )
     parser.add_argument(
         "-neg",
         "--negative",
         help="if true -> test mode - default FALSE",
         type=float,
-        default=0.1,
+        default=0.3,
     )
     parser.add_argument(
         "-ae",
         "--adaptive_epochs",
         help="if true -> test mode - default FALSE",
         type=int,
-        default=200,
+        default=100,
+    )
+    parser.add_argument(
+        "-c",
+        "--copy_log_path",
+        help="",
+        type=str,
+        default="",
     )
 
     return parser.parse_args(args)

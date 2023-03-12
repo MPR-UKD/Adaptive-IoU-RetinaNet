@@ -1,5 +1,7 @@
 import platform
+import shutil
 from multiprocessing import Manager
+from pathlib import Path
 
 import pytorch_lightning as pl
 import torch
@@ -118,9 +120,13 @@ def main(args=None):
     )
 
     # Train RetinaNet model
-    # trainer.tune(retinanet, dataloader)
+    trainer.tune(retinanet, dataloader)
     trainer.fit(retinanet, dataloader)
     trainer.test(retinanet, dataloader)
+
+    if args.copy_log_path != "":
+        shutil.copytree("images_bbox", Path(args.copy_log_path) / "images_box")
+
 
 
 if __name__ == "__main__":

@@ -56,9 +56,9 @@ class Config:
 
         self.aug = {
             # The size of the images after preprocessing
-            "image_size": 200,
+            "image_size": 400,
             # The initial size of the images before resizing
-            "init_resize": 1000,
+            "init_resize": 600,
             # The gamma value for adjusting the brightness of the image
             "gamma_contrast": (0.5, 1.5),
             # The probability of a pixel being dropped out
@@ -82,7 +82,7 @@ class Config:
         }
 
         # Choose the distribution of the data between train, validation, and test sets
-        self.data_distribution = [0.8, 0.2]  # Train, Val, Test (Sum <= 1)
+        self.data_distribution = [0.7, 0.2]  # Train, Val, Test (Sum <= 1)
 
         ################################################################################################################
 

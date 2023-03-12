@@ -1,6 +1,6 @@
 [![Actions Status](https://github.com/ludgerradke/Adaptive-IoU-RetinaNet/actions/workflows/python3.08.yml/badge.svg)](https://github.com/ludgerradke/Adaptive-IoU-RetinaNet/actions/workflows/python3.08.yml/badge.svg)
 [![Actions Status](https://github.com/ludgerradke/Adaptive-IoU-RetinaNet/actions/workflows/python3.09.yml/badge.svg)](https://github.com/ludgerradke/Adaptive-IoU-RetinaNet/actions/workflows/python3.09.yml/badge.svg)
-[![Actions Status](https://github.com/ludgerradke/Adaptive-IoU-RetinaNet/actions/workflows/python3.10.yml/badge.svg)](https://github.com/ludgerradke/Adaptive-IoU-RetinaNet/actions/workflows/python3.10.yml/badge.svg)
+
 # Adaptive-IoU-RetinaNet
 
 This repository contains a modified version of the source code for the paper "Adaptive IoU Thresholding for Improving Small Object Detection: A Proof-of-Concept Study of Hand Erosions Classification of Patients with Rheumatic Arthritis on X-ray Images" (DOI: [10.3390/diagnostics13010104](https://www.mdpi.com/2075-4418/13/1/104). 

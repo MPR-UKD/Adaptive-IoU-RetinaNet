@@ -1,8 +1,8 @@
 import numpy as np
 from imgaug import BoundingBox
 
-from src.encoder import DataEncoder
-from src.config import Config
+from ..src.encoder import DataEncoder
+from ..src.config import Config
 import torch
 
 

@@ -4,7 +4,7 @@ import imgaug.augmenters as iaa
 import numpy as np
 from imgaug import BoundingBox
 
-from src.config import Config
+from adapive_iou_retinanet.src.config import Config
 
 
 def decode_bboxes(bboxes: np.ndarray) -> List:

@@ -1,12 +1,12 @@
 import random
 from PIL import Image, ImageDraw
-from src.encoder import DataEncoder
+from adapive_iou_retinanet.src.encoder import DataEncoder
 from typing import Callable, List, Dict, Union
-from src.config import Config
+from adapive_iou_retinanet.src.config import Config
 import numpy as np
 from copy import deepcopy
 import torch
-from src.dataset import Dataset
+from adapive_iou_retinanet.src.dataset import Dataset
 
 
 class TestDataset(Dataset):

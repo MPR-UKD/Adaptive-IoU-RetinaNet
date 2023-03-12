@@ -6,7 +6,7 @@ import torch
 from pytorch_lightning.callbacks import ModelCheckpoint
 from torchvision import transforms
 
-from src import *
+from adapive_iou_retinanet.src import *
 
 assert torch.__version__.split(".")[0] == "1"
 

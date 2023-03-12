@@ -4,7 +4,7 @@ from typing import List
 import torch
 from torchvision.ops import sigmoid_focal_loss
 
-from src.utils import one_hot_embedding
+from adapive_iou_retinanet.src.utils import one_hot_embedding
 
 
 class FocalLoss(nn.Module):

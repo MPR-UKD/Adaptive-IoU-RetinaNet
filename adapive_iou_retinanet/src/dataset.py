@@ -4,7 +4,6 @@ import torch
 
 
 class Dataset(ABC):
-
     @abstractmethod
     def __init__(
         self,
@@ -21,11 +20,15 @@ class Dataset(ABC):
 
     @abstractmethod
     def num_classes(self) -> List:
-        assert AssertionError("This is a necessary function for the functionality of the Code")
+        assert AssertionError(
+            "This is a necessary function for the functionality of the Code"
+        )
 
     @abstractmethod
     def __len__(self) -> int:
-        assert AssertionError("This is a necessary function for the functionality of the Code")
+        assert AssertionError(
+            "This is a necessary function for the functionality of the Code"
+        )
 
     def adaptive_iou(self):
         # Compute the positive and negative sample ratios based on the current epoch and adaptive epochs

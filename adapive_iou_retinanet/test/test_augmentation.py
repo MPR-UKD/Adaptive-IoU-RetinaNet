@@ -1,8 +1,8 @@
 import numpy as np
 from imgaug import BoundingBox
 
-from src.augmentation import Augmenter, decode_bboxes, encode_bboxes
-from src.config import Config
+from ..src.augmentation import Augmenter, decode_bboxes, encode_bboxes
+from ..src.config import Config
 
 
 def test_decode_bboxes():

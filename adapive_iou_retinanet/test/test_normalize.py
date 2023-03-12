@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from src.normalization import Normalizer
+from ..src.normalization import Normalizer
 
 
 def test_normalization():

@@ -12,12 +12,14 @@ The purpose of this modification is to remove patient filter criteria and provid
 The test dataset used in this repository consists of images of circles with different sizes and brightness levels. 
 Each circle has two scores: score_1, determined based on the size of the circle, and score_2, determined based on the brightness of the circle. The RetinaNet model in this repository attempts to detect the circles based on both scores. In the original paper, score_1 was defined as the joint score and score_2 as the SvH score.
 
-**Ground Truth**
-![Ground Truth](/assets/gt_image.png)
+**Ground truth**
+![](/assets/gt_image.png)
+
 **Prediction after 20 Epochs with adaptive adjustment after 20 Epochs**
-![Ground Truth](/assets/gt_image.png)
+![](/assets/gt_image.png)
+
 **Prediction after 20 Epochs without adaptive**
-![Ground Truth](/assets/gt_image.png)
+![](/assets/gt_image.png)
 
 ### Installation
 To install the required dependencies for this repository, use the following command:

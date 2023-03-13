@@ -6,9 +6,18 @@
 This repository contains a modified version of the source code for the paper "Adaptive IoU Thresholding for Improving Small Object Detection: A Proof-of-Concept Study of Hand Erosions Classification of Patients with Rheumatic Arthritis on X-ray Images" (DOI: [10.3390/diagnostics13010104](https://www.mdpi.com/2075-4418/13/1/104). 
 The purpose of this modification is to remove patient filter criteria and provide a test dataset consisting of circles with different sizes and brightness levels for classification testing.
 
+![](/assets/paper.png)
+
 ### Test Dataset
 The test dataset used in this repository consists of images of circles with different sizes and brightness levels. 
 Each circle has two scores: score_1, determined based on the size of the circle, and score_2, determined based on the brightness of the circle. The RetinaNet model in this repository attempts to detect the circles based on both scores. In the original paper, score_1 was defined as the joint score and score_2 as the SvH score.
+
+**Ground Truth**
+![Ground Truth](/assets/gt_image.png)
+**Prediction after 20 Epochs with adaptive adjustment after 20 Epochs**
+![Ground Truth](/assets/gt_image.png)
+**Prediction after 20 Epochs without adaptive**
+![Ground Truth](/assets/gt_image.png)
 
 ### Installation
 To install the required dependencies for this repository, use the following command:

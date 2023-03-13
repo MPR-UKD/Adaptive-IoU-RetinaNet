@@ -210,6 +210,7 @@ class Shapes:
             else:
                 score_2 = 2
                 draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 255, 255))
+            r += 2
             boxes.append((cx - r, cy - r, cx + r, cy + r, score_1, score_2))
             score_1 += 1
 

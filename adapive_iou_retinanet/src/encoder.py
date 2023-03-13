@@ -185,7 +185,7 @@ class DataEncoder:
         """
         cls_preds = multi_cls_preds[0]
         CLS_THRESH = 0.5
-        NMS_THRESH = 0.5
+        NMS_THRESH = 0.7
 
         input_size = (
             torch.Tensor([input_size, input_size])

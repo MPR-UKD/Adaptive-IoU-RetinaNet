@@ -128,7 +128,7 @@ def get_args_server(args=None):
         "--adaptive_epochs",
         help="if true -> test mode - default FALSE",
         type=int,
-        default=100,
+        default=20,
     )
     parser.add_argument(
         "-c",

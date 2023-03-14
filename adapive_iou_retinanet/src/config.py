@@ -5,7 +5,7 @@ class Config:
         ###########################################
 
         self.log_step_size = 1
-        self.img_step_size = 10
+        self.img_step_size = 5
 
         ###########################################
         #                RetinaNet                #
@@ -21,7 +21,7 @@ class Config:
         self.norm = "batchnorm"
 
         # Show an image every n steps during training
-        self.show_img_step_size = 10
+        self.show_img_step_size = 5
 
         # Choose which pyramid levels to extract features from: P1: 1, P2: 2, P3: 3, P4: 4, P5: 5
         self.pyramid_levels = [3, 4]
@@ -45,7 +45,7 @@ class Config:
         ###########################################
 
         # Choose the learning rate for the optimizer
-        self.learning_rate = 10**-3
+        self.learning_rate = 10**-6
 
         # Choose the weight decay for the optimizer
         self.weight_decay = 10**-6

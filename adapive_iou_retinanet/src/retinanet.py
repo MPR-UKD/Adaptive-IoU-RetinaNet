@@ -372,7 +372,7 @@ class RetinaNet(pl.LightningModule):
                 mode="min",
                 factor=0.1,
                 patience=20,
-                cooldown=40,
+                cooldown=20,
                 min_lr=1e-6,
                 verbose=True,
             ),

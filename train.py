@@ -86,7 +86,7 @@ def main(args=None):
     dataloader, n_cls = get_dataloader(args, cf, epoch_manager)
 
     # Initialize RetinaNet model
-    retinanet = RetinaNet(n_cls=n_cls, epoch_dict=epoch_manager, cf=cf)
+    retinanet = RetinaNet(n_cls=n_cls, epoch_dict=epoch_manager, cf=cf, )
 
     # Define metrics for ModelCheckpoint callback
     metrics = [
@@ -120,7 +120,7 @@ def main(args=None):
     )
 
     # Train RetinaNet model
-    trainer.tune(retinanet, dataloader)
+    #trainer.tune(retinanet, dataloader)
     trainer.fit(retinanet, dataloader)
     trainer.test(retinanet, dataloader)
 

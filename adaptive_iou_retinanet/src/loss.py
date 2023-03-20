@@ -4,7 +4,7 @@ from typing import List
 import torch
 from torchvision.ops import sigmoid_focal_loss
 
-from adapive_iou_retinanet.src.utils import one_hot_embedding
+from adaptive_iou_retinanet.src.utils import one_hot_embedding
 
 
 class FocalLoss(nn.Module):
@@ -65,11 +65,12 @@ class FocalLoss(nn.Module):
         """
         loss_dict = {}
 
-        # Determine the number of positive anchor points in the batch.
-        num_pos_anchors = (cls_targets > 0).sum().float()
-
         # Localization loss.
         pos_mask = cls_targets[:, :, 0] > 0
+
+        # Determine the number of positive anchor points in the batch.
+        num_pos_anchors = pos_mask.long().sum()
+
         loc_preds_pos = loc_preds[pos_mask].view(-1, 4)
         loc_targets_pos = loc_targets[pos_mask].view(-1, 4)
         loc_loss = (

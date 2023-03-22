@@ -109,7 +109,7 @@ def main(args=None):
         mode="max",
     )
 
-    map_0_checkpoint = ModelCheckpoint(
+    mAP_0_checkpoint = ModelCheckpoint(
         monitor="mAP_0",
         dirpath="./images_bbox/",
         filename="sample-mnist-{epoch:02d}-map-0={mAP_0:.3f}",
@@ -117,7 +117,7 @@ def main(args=None):
         mode="max",
     )
 
-    map_1_checkpoint = ModelCheckpoint(
+    mAP_1_checkpoint = ModelCheckpoint(
         monitor="mAP_1",
         dirpath="./images_bbox/",
         filename="sample-mnist-{epoch:02d}-map-1={mAP_1:.3f}",
@@ -129,8 +129,8 @@ def main(args=None):
     checkpoint_callbacks = [
         val_accuracy_checkpoint,
         erosion_accuracy_checkpoint,
-        map_0_checkpoint,
-        map_1_checkpoint,
+        mAP_0_checkpoint,
+        mAP_1_checkpoint,
     ]
 
     # Initialize PyTorch Lightning Trainer
@@ -147,7 +147,6 @@ def main(args=None):
     )
 
     # Train RetinaNet model
-    # trainer.tune(retinanet, dataloader)
     trainer.fit(retinanet, dataloader)
     trainer.test(retinanet, dataloader)
 

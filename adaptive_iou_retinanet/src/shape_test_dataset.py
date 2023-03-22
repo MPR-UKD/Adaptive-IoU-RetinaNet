@@ -35,9 +35,7 @@ class TestDataset(Dataset):
         for i in range(self.number_of_images):
             img, bboxes = shapes.draw(i)
             data.append(
-                {"bboxes": bboxes[:, :4],
-                 "image": img,
-                 "scores": bboxes[:, 4:]}
+                {"bboxes": bboxes[:, :4], "image": img, "scores": bboxes[:, 4:]}
             )
         return data
 

@@ -5,7 +5,7 @@ class Config:
         ###########################################
 
         self.log_step_size = 1
-        self.img_step_size = 1
+        self.img_step_size = 5
 
         ###########################################
         #                RetinaNet                #

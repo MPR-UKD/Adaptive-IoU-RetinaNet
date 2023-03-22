@@ -1,4 +1,5 @@
 """Encode object boxes and labels."""
+
 import math
 
 import torch
@@ -9,10 +10,6 @@ from adaptive_iou_retinanet.src.utils import (
     box_nms,
     change_box_order,
 )
-
-
-import torch
-import math
 
 
 class DataEncoder:

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Dict, Union
+from typing import List, Dict, Union
+
 import torch
 
 

@@ -212,9 +212,9 @@ class RetinaFPN(nn.Module):
         return tuple(output)
 
 
-def RetinaFPN50():
-    return RetinaFPN(Bottleneck, [2, 4, 6, 3])
+def RetinaFPN50(fpn_layer=[3, 4]):
+    return RetinaFPN(Bottleneck, [2, 4, 6, 3], fpn_layer)
 
 
-def RetinaFPN101():
-    return RetinaFPN(Bottleneck, [2, 4, 23, 3])
+def RetinaFPN101(fpn_layer=[3, 4]):
+    return RetinaFPN(Bottleneck, [2, 4, 23, 3], fpn_layer)

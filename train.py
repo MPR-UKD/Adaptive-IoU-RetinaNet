@@ -8,7 +8,7 @@ import torch
 from pytorch_lightning.callbacks import ModelCheckpoint
 from torchvision import transforms
 
-from adapive_iou_retinanet.src import *
+from adaptive_iou_retinanet.src import *
 
 assert torch.__version__.split(".")[0] == "1"
 
@@ -36,7 +36,7 @@ def get_dataloader(args, cf, epoch_manager):
     creates a PytorchLightningDataloaderModule for managing the datasets.
     """
 
-    number_of_images = {"train": 300, "val": 50, "test": 50}
+    number_of_images = {"train": 3000, "val": 50, "test": 50}
     datasets = [
         TestDataset(
             transformer=transforms.Compose(
@@ -49,7 +49,7 @@ def get_dataloader(args, cf, epoch_manager):
             config=cf,
             pos=args.positive,
             neg=args.negative,
-            adaptive_epochs=args.adaptive_epochs,
+            adaptive_epochs=args.adaptive_epochs if mode == "train" else 0,
             epoch_dict=epoch_manager,
         )
         for mode in ["train", "val", "test"]
@@ -86,24 +86,51 @@ def main(args=None):
     dataloader, n_cls = get_dataloader(args, cf, epoch_manager)
 
     # Initialize RetinaNet model
-    retinanet = RetinaNet(n_cls=n_cls, epoch_dict=epoch_manager, cf=cf, )
+    retinanet = RetinaNet(
+        n_cls=n_cls,
+        epoch_dict=epoch_manager,
+        cf=cf,
+    )
 
-    # Define metrics for ModelCheckpoint callback
-    metrics = [
-        ("Val_Accuracy", "max", 1),
-        ("Erosion_Accuracy", "max", 1),
-        ("mAP_0", "max", 1),
-        ("mAP_1", "max", 1),
-    ]
+    # Define checkpoints for each metric
+    val_accuracy_checkpoint = ModelCheckpoint(
+        monitor="Val_Accuracy",
+        dirpath="./images_bbox/",
+        filename="sample-mnist-{epoch:02d}-val-accuracy={Val_Accuracy:.3f}",
+        save_top_k=1,
+        mode="max",
+    )
+
+    erosion_accuracy_checkpoint = ModelCheckpoint(
+        monitor="Erosion_Accuracy",
+        dirpath="./images_bbox/",
+        filename="sample-mnist-{epoch:02d}-erosion-accuracy={Erosion_Accuracy:.3f}",
+        save_top_k=1,
+        mode="max",
+    )
+
+    map_0_checkpoint = ModelCheckpoint(
+        monitor="mAP_0",
+        dirpath="./images_bbox/",
+        filename="sample-mnist-{epoch:02d}-map-0={mAP_0:.3f}",
+        save_top_k=1,
+        mode="max",
+    )
+
+    map_1_checkpoint = ModelCheckpoint(
+        monitor="mAP_1",
+        dirpath="./images_bbox/",
+        filename="sample-mnist-{epoch:02d}-map-1={mAP_1:.3f}",
+        save_top_k=1,
+        mode="max",
+    )
+
+    # Group the checkpoints into a list
     checkpoint_callbacks = [
-        ModelCheckpoint(
-            monitor=metric[0],
-            dirpath="./images_bbox/",
-            filename=f"sample-mnist-{{epoch:02d}}-{metric[0]}={{metric:.3f}}",
-            save_top_k=metric[2],
-            mode=metric[1],
-        )
-        for metric in metrics
+        val_accuracy_checkpoint,
+        erosion_accuracy_checkpoint,
+        map_0_checkpoint,
+        map_1_checkpoint,
     ]
 
     # Initialize PyTorch Lightning Trainer
@@ -120,13 +147,12 @@ def main(args=None):
     )
 
     # Train RetinaNet model
-    #trainer.tune(retinanet, dataloader)
+    # trainer.tune(retinanet, dataloader)
     trainer.fit(retinanet, dataloader)
     trainer.test(retinanet, dataloader)
 
     if args.copy_log_path != "":
         shutil.copytree("images_bbox", Path(args.copy_log_path) / "images_box")
-
 
 
 if __name__ == "__main__":

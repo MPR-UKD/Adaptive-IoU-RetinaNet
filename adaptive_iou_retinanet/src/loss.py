@@ -66,10 +66,11 @@ class FocalLoss(nn.Module):
         loss_dict = {}
 
         # Localization loss.
-        pos_mask = cls_targets[:, :, 0] > 0
+        pos = cls_targets[:, :, 0] > 0
+        pos_mask = pos.unsqueeze(2).expand_as(loc_preds)
 
         # Determine the number of positive anchor points in the batch.
-        num_pos_anchors = pos_mask.long().sum()
+        num_pos_anchors = pos.long().sum()
 
         loc_preds_pos = loc_preds[pos_mask].view(-1, 4)
         loc_targets_pos = loc_targets[pos_mask].view(-1, 4)
@@ -89,7 +90,7 @@ class FocalLoss(nn.Module):
                     cls_pred[mask].view(-1, self.num_classes[i]),
                     cls_targets[:, :, i][pos_neg],
                     self.num_classes[i],
-                    gamma=None if i == 0 else self.gamma,
+                    gamma=self.gamma,
                 )
                 / num_pos_anchors
             )

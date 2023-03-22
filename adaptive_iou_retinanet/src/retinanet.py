@@ -9,14 +9,14 @@ import pandas as pd
 from typing import List
 import pytorch_lightning as pl
 import torch
-from adapive_iou_retinanet.src.config import Config
+from adaptive_iou_retinanet.src.config import Config
 import torch.nn as nn
 from sklearn.metrics import confusion_matrix, accuracy_score
 
-from adapive_iou_retinanet.src.encoder import DataEncoder
-from adapive_iou_retinanet.src.fpn import RetinaFPN50, RetinaFPN101
-from adapive_iou_retinanet.src.loss import FocalLoss
-from adapive_iou_retinanet.src.utils import one_hot_embedding
+from adaptive_iou_retinanet.src.encoder import DataEncoder
+from adaptive_iou_retinanet.src.fpn import RetinaFPN50, RetinaFPN101
+from adaptive_iou_retinanet.src.loss import FocalLoss
+from adaptive_iou_retinanet.src.utils import one_hot_embedding
 from sklearn.metrics import average_precision_score
 
 
@@ -166,7 +166,9 @@ class RetinaNet(pl.LightningModule):
     def __init__(self, n_cls: List[int], epoch_dict: dict, cf: Config):
         super(RetinaNet, self).__init__()
         self.fpn = (
-            RetinaFPN50() if cf.res_architecture == "resnet50" else RetinaFPN101()
+            RetinaFPN50(cf.pyramid_levels)
+            if cf.res_architecture == "resnet50"
+            else RetinaFPN101(cf.pyramid_levels)
         )
         self.num_anchors = 9
         self.loc_head = RegressionModel(
@@ -371,9 +373,9 @@ class RetinaNet(pl.LightningModule):
                 optimizer,
                 mode="min",
                 factor=0.1,
-                patience=20,
-                cooldown=20,
-                min_lr=1e-6,
+                patience=5,
+                cooldown=5,
+                min_lr=1e-8,
                 verbose=True,
             ),
             "monitor": "val_loss",
@@ -460,7 +462,9 @@ def draw_on_fig(ax, boxes, targets, color):
 
         # Add the patch to the Axes
         ax.add_patch(rect)
-        ax.text(coord[0], coord[1], label, color=color, fontsize="small")  # 'xx-small')
+        ax.text(
+            coord[0] - 2, coord[1] - 2, label, color=color, fontsize="small"
+        )  # 'xx-small')
     return ax
 
 
@@ -499,7 +503,7 @@ def clear_detections(boxes, targets):
     joins = targets[0]
     boxes_out, targets_out = [], []
 
-    for i in range(33):
+    for i in range(5):
         xs, ys, size_xs, size_ys, scores = [], [], [], [], []
         count = 0
         for b, s in zip(boxes, list(joins)):
@@ -513,8 +517,8 @@ def clear_detections(boxes, targets):
         if len(xs) > 0:
             x = np.mean(xs)
             y = np.mean(ys)
-            size_x = np.mean(size_xs) / 2
-            size_y = np.mean(size_ys) / 2
+            size_x = np.mean(size_xs)
+            size_y = np.mean(size_ys)
             boxes_out.append(np.array([x - size_x, y - size_y, x + size_x, y + size_y]))
             targets_out.append(np.median(scores, axis=0))
 

@@ -24,7 +24,7 @@ def get_args_windows(args=None):
         "--max_epochs",
         type=int,
         help="number of max training epochs - default 5",
-        default=400,
+        default=40,
     )
     parser.add_argument(
         "--csv_path",
@@ -52,14 +52,14 @@ def get_args_windows(args=None):
         "--negative",
         help="if true -> test mode - default FALSE",
         type=float,
-        default=0.4,
+        default=0.3,
     )
     parser.add_argument(
         "-ae",
         "--adaptive_epochs",
         help="if true -> test mode - default FALSE",
         type=int,
-        default=100,
+        default=30,
     )
     parser.add_argument(
         "-c",
@@ -95,7 +95,7 @@ def get_args_server(args=None):
         "--max_epochs",
         type=int,
         help="number of max training epochs - default 5",
-        default=1,
+        default=50,
     )
     parser.add_argument(
         "--csv_path",
@@ -128,7 +128,7 @@ def get_args_server(args=None):
         "--adaptive_epochs",
         help="if true -> test mode - default FALSE",
         type=int,
-        default=20,
+        default=40,
     )
     parser.add_argument(
         "-c",

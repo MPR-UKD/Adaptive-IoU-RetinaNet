@@ -48,7 +48,7 @@ class Dataset(ABC):
         neg_ratio = neg_ratio if neg_ratio < self.neg else self.neg
 
         # Set a minimum positive sample ratio to avoid division by zero
-        pos_ratio = pos_ratio if pos_ratio > 0 else 0.05
+        pos_ratio = pos_ratio if pos_ratio > 0.05 else 0.05
 
         # Ensure that the positive sample ratio is greater than the negative sample ratio
         assert pos_ratio > neg_ratio

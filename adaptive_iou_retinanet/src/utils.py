@@ -104,11 +104,10 @@ def change_box_order(boxes, order):
     b = boxes[:, 2:]
     if order == "xyxy2xywh":
         return torch.cat([(a + b) / 2, b - a + 1], 1)
-    b -= 1
     return torch.cat([a - b / 2, a + b / 2], 1)
 
 
-def box_iou(box1, box2, order="xyxy"):
+def box_iou(box1, box2, order="xyxy", only_inter: bool = False):
     """Compute the intersection over union of two set of boxes.
     The default box order is (xmin, ymin, xmax, ymax).
     Args:
@@ -117,8 +116,6 @@ def box_iou(box1, box2, order="xyxy"):
       order: (str) box order, either 'xyxy' or 'xywh'.
     Return:
       (tensor) iou, sized [N,M].
-    Reference:
-      https://github.com/chainer/chainercv/blob/master/chainercv/utils/bbox/bbox_iou.py
     """
     if order == "xywh":
         box1 = change_box_order(box1, "xywh2xyxy")
@@ -135,7 +132,10 @@ def box_iou(box1, box2, order="xyxy"):
 
     area1 = (box1[:, 2] - box1[:, 0] + 1) * (box1[:, 3] - box1[:, 1] + 1)  # [N,]
     area2 = (box2[:, 2] - box2[:, 0] + 1) * (box2[:, 3] - box2[:, 1] + 1)  # [M,]
-    iou = inter / (area1[:, None] + area2 - inter)
+    if only_inter:
+        iou = inter / (area1[:, None])
+    else:
+        iou = inter / (area1[:, None] + area2 - inter)
     return iou
 
 

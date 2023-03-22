@@ -4,7 +4,7 @@ import imgaug.augmenters as iaa
 import numpy as np
 from imgaug import BoundingBox
 
-from adapive_iou_retinanet.src.config import Config
+from adaptive_iou_retinanet.src.config import Config
 
 
 def decode_bboxes(bboxes: np.ndarray) -> List:
@@ -82,9 +82,13 @@ class Augmenter:
             [
                 iaa.GammaContrast(cf.aug["gamma_contrast"]),  # Adjust brightness
                 iaa.Dropout(cf.aug["dropout"]),  # Random pixel dropout
-                iaa.Flipud(cf.aug["flipud"]),  # Randomly flip the image vertically
+                iaa.Flipud(cf.aug["flipud"])
+                if cf.aug["flipud"] is not None
+                else iaa.Noop(),  # Randomly flip the image vertically
                 sometimes(
                     iaa.Rot90(cf.aug["rot90"])
+                    if cf.aug["rot90"] is not None
+                    else iaa.Noop()
                 ),  # Randomly rotate the image by 90 degrees
                 sometimes(
                     iaa.TranslateX(percent=cf.aug["translateX"])

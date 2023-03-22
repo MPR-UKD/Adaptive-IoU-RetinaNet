@@ -3,7 +3,12 @@ import math
 
 import torch
 
-from adapive_iou_retinanet.src.utils import meshgrid, box_iou, box_nms, change_box_order
+from adaptive_iou_retinanet.src.utils import (
+    meshgrid,
+    box_iou,
+    box_nms,
+    change_box_order,
+)
 
 
 import torch
@@ -112,7 +117,7 @@ class DataEncoder:
         anchor_boxes = self._get_anchor_boxes(input_size)
         boxes = change_box_order(boxes, "xyxy2xywh")
 
-        ious = box_iou(anchor_boxes, boxes, order="xywh")
+        ious = box_iou(anchor_boxes, boxes, order="xywh", only_inter=False)
         max_ious, max_ids = ious.max(1)
         boxes = boxes[max_ids]
 
@@ -184,7 +189,7 @@ class DataEncoder:
           labels: (tensor) class labels for each box, sized [#obj,].
         """
         cls_preds = multi_cls_preds[0]
-        CLS_THRESH = 0.5
+        CLS_THRESH = 0.3
         NMS_THRESH = 0.7
 
         input_size = (

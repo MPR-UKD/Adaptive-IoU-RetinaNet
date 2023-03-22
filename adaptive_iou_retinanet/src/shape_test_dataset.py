@@ -1,12 +1,12 @@
 import random
 from PIL import Image, ImageDraw
-from adapive_iou_retinanet.src.encoder import DataEncoder
+from adaptive_iou_retinanet.src.encoder import DataEncoder
 from typing import Callable, List, Dict, Union
-from adapive_iou_retinanet.src.config import Config
+from adaptive_iou_retinanet.src.config import Config
 import numpy as np
 from copy import deepcopy
 import torch
-from adapive_iou_retinanet.src.dataset import Dataset
+from adaptive_iou_retinanet.src.abstract_dataset import Dataset
 
 
 class TestDataset(Dataset):
@@ -30,17 +30,19 @@ class TestDataset(Dataset):
         self.data = self.load_data()
 
     def load_data(self):
-        shapes = Shapes(size=1000, border=0)
+        shapes = Shapes(size=800)
         data = []
         for i in range(self.number_of_images):
-            img, bboxes = shapes.draw()
+            img, bboxes = shapes.draw(i)
             data.append(
-                {"bboxes": bboxes[:, :4], "image": img, "scores": bboxes[:, 4:]}
+                {"bboxes": bboxes[:, :4],
+                 "image": img,
+                 "scores": bboxes[:, 4:]}
             )
         return data
 
     def num_classes(self) -> List:
-        return [5, 3]
+        return [4, 4]
 
     def __len__(self) -> int:
         """
@@ -164,54 +166,69 @@ class Shapes:
     and bounding box coordinates.
     """
 
-    def __init__(self, size=256, border=10):
+    def __init__(self, size=256):
         """
         Initialize the Shapes object with the desired image size and border width.
 
         Args:
             size (int): The size of the square image to generate (default: 256).
-            border (int): The width of the border around the image (default: 10).
         """
+        self.drawer = None
         self.size = size
-        self.border = border
 
-    def draw(self):
+    def draw_circle(self, x, y, r):
+        fill = tuple([random.randint(1, 255) for _ in range(3)])
+        self.drawer.ellipse((x - r, y - r, x + r, y + r), fill=fill)
+
+    def draw_rect(self, x, y, r):
+        fill = tuple([random.randint(1, 255) for _ in range(3)])
+        self.drawer.rectangle((x - r, y - r, x + r, y + r), fill=fill)
+
+    def draw_poly(self, x, y, r):
+        fill = tuple([random.randint(1, 255) for _ in range(3)])
+        self.drawer.polygon([(x - r, y - r), (x, y + r), (x + r, y - r)], fill=fill)
+
+    def draw(self, i):
         """
-        Draw an image with three circles and three rectangles, and draw a bounding
+        Draw an image with three shapes, and draw a bounding
         box around each shape.
 
         Returns:
             PIL.Image.Image: The resulting image.
-            list: A list of (x_min, y_min, x_max, y_max) coordinates for each shape.
+            list: A list of (x_min, y_min, x_max, y_max, score_1, score_2)
+            coordinates for each shape, where score_1 is the shape type
+            (1 = circle, 2 = triangle, 3 = rectangle, 4 = pentagon)
+            and score_2 is the color (1 = dark, 2 = light).
         """
         # Initialize a new PIL image with a black background.
         img = Image.new("RGB", (self.size, self.size), (0, 0, 0))
 
         # Initialize a new PIL draw object to draw shapes on the image.
-        draw = ImageDraw.Draw(img)
+        self.drawer = ImageDraw.Draw(img)
 
-        # Generate the coordinates of the circles
-        circles = [
-            (
-                random.randint(int(0.1 * self.size), int(0.9 * self.size)),
-                random.randint(int(0.1 * self.size), int(0.9 * self.size)),
-            )
-            for _ in range(4)
-        ]
-
-        # Draw the circles on the image, and compute their bounding boxes.
+        #
         boxes = []
-        rs = [(i + 1) * int(self.size / 20) for i in range(4)]
-        score_1 = 1
-        for (cx, cy), r in zip(circles, rs):
-            if random.randint(0, 1) == 1:
-                score_2 = 1
-                draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(120, 120, 120))
-            else:
-                score_2 = 2
-                draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 255, 255))
-            r += 2
-            boxes.append((cx - r, cy - r, cx + r, cy + r, score_1, score_2))
-            score_1 += 1
+        for score_1 in range(1, 4):
+            x = random.randint(int(0.1 * self.size), int(0.9 * self.size))
+            y = random.randint(int(0.1 * self.size), int(0.9 * self.size))
+            r = random.randint(40, 50)
+            r_ = random.randint(15, 25)
+
+            if score_1 == 1:
+                self.draw_rect(x, y, r)
+            elif score_1 == 2:
+                self.draw_circle(x, y, r)
+            elif score_1 == 3:
+                self.draw_poly(x, y, r)
+
+            score_2 = random.randint(1, 3)
+            if score_2 == 1:
+                self.draw_rect(x, y, r_)
+            elif score_2 == 2:
+                self.draw_circle(x, y, r_)
+            elif score_2 == 3:
+                self.draw_poly(x, y, r_)
+
+            boxes.append([x - r_, y - r_, x + r_, y + r_, score_1, score_2])
 
         return np.array(img.convert("L")), np.array(boxes)

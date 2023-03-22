@@ -1,17 +1,12 @@
-# Basis-Image
-FROM python:3.9-slim-buster
+#FROM lurad101/python38
 
-# Arbeitsverzeichnis im Container
-WORKDIR /app
+#COPY . .
 
-# Kopieren der erforderlichen Dateien in das Arbeitsverzeichnis
+#RUN pip install --no-cache-dir -r requirements.txt
+
+FROM lurad101/adaptive-iou-retinanet
+
 COPY . .
 
-# Installation von Abhängigkeiten
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        gcc \
-        && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir -r requirements.txt
-
-# Verwenden von Python aus venv
-ENV PATH="/app/venv/bin:$PATH"
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6 -y

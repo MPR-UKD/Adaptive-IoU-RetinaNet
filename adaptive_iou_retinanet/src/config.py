@@ -5,7 +5,7 @@ class Config:
         ###########################################
 
         self.log_step_size = 1
-        self.img_step_size = 5
+        self.img_step_size = 1
 
         ###########################################
         #                RetinaNet                #
@@ -21,7 +21,7 @@ class Config:
         self.norm = "batchnorm"
 
         # Show an image every n steps during training
-        self.show_img_step_size = 5
+        self.show_img_step_size = 1
 
         # Choose which pyramid levels to extract features from: P1: 1, P2: 2, P3: 3, P4: 4, P5: 5
         self.pyramid_levels = [3, 4]
@@ -37,7 +37,7 @@ class Config:
         ###########################################
 
         # Choose the alpha and gamma parameters for the Focal Loss function
-        self.focalLoss_alpha = 0.25
+        self.focalLoss_alpha = 0.75
         self.focalLoss_gamma = 2
 
         ###########################################
@@ -45,7 +45,7 @@ class Config:
         ###########################################
 
         # Choose the learning rate for the optimizer
-        self.learning_rate = 10**-6
+        self.learning_rate = 10**-4
 
         # Choose the weight decay for the optimizer
         self.weight_decay = 10**-6
@@ -58,15 +58,15 @@ class Config:
             # The size of the images after preprocessing
             "image_size": 400,
             # The initial size of the images before resizing
-            "init_resize": 600,
+            "init_resize": 1000,
             # The gamma value for adjusting the brightness of the image
-            "gamma_contrast": (0.5, 1.5),
+            "gamma_contrast": (0.75, 1.25),
             # The probability of a pixel being dropped out
             "dropout": 0.01,
             # The probability of flipping the image vertically
-            "flipud": 0.25,
+            "flipud": None,
             # The degree of rotation in increments of 90 degrees
-            "rot90": [1],
+            "rot90": None,  # [1],
             # The percentage of horizontal translation
             "translateX": (-0.05, 0.05),
             # The percentage of vertical translation

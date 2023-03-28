@@ -186,7 +186,7 @@ class DataEncoder:
           labels: (tensor) class labels for each box, sized [#obj,].
         """
         cls_preds = multi_cls_preds[0]
-        CLS_THRESH = 0.3
+        CLS_THRESH = 0.4
         NMS_THRESH = 0.7
 
         input_size = (

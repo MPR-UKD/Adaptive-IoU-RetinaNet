@@ -48,7 +48,7 @@ class Config:
         self.learning_rate = 10**-5
 
         # Choose the weight decay for the optimizer
-        self.weight_decay = 10**-8
+        self.weight_decay = 10**-6
 
         ###########################################
         #      Dataloader - DataTransformation    #

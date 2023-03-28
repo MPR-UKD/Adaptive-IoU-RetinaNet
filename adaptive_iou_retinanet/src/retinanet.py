@@ -365,7 +365,7 @@ class RetinaNet(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(
-            self.parameters(), lr=self.learning_rate, weight_decay=10**-6
+            self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay
         )
 
         scheduler_dict = {
@@ -503,7 +503,7 @@ def clear_detections(boxes, targets):
     joins = targets[0]
     boxes_out, targets_out = [], []
 
-    for i in range(5):
+    for i in range(30):
         xs, ys, size_xs, size_ys, scores = [], [], [], [], []
         count = 0
         for b, s in zip(boxes, list(joins)):

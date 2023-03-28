@@ -36,7 +36,12 @@ def get_dataloader(args, cf, epoch_manager):
     creates a PytorchLightningDataloaderModule for managing the datasets.
     """
 
-    number_of_images = {"train": 3000, "val": 50, "test": 50}
+    if platform.system() == "Windows":
+        number_of_images = {"train": 50, "val": 5, "test": 5}
+    else:
+        #number_of_images = {"train": 3, "val": 5, "test": 5}
+        number_of_images = {"train": 3000, "val": 50, "test": 50}
+
     datasets = [
         TestDataset(
             transformer=transforms.Compose(

@@ -221,7 +221,7 @@ def one_hot_embedding(labels, num_classes):
       (tensor) encoded labels, sized [N,#classes].
     """
     labels[labels == -1] = 0
-    y = torch.eye(num_classes).long()  # [D,D]
+    y = torch.eye(num_classes, device=labels.device).long()# [D,D]
     return y[labels.long()]  # [N,D]
 
 

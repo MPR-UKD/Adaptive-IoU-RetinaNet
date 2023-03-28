@@ -11,14 +11,14 @@ from adaptive_iou_retinanet.src.abstract_dataset import Dataset
 
 class TestDataset(Dataset):
     def __init__(
-        self,
-        transformer: Callable,
-        number_of_images: int,
-        config: Config,
-        pos: float = 0.5,
-        neg: float = 0.3,
-        adaptive_epochs: int = 0,
-        epoch_dict: dict = None,
+            self,
+            transformer: Callable,
+            number_of_images: int,
+            config: Config,
+            pos: float = 0.5,
+            neg: float = 0.3,
+            adaptive_epochs: int = 0,
+            epoch_dict: dict = None,
     ):
         self.transform = transformer
         self.number_of_images = number_of_images
@@ -40,7 +40,7 @@ class TestDataset(Dataset):
         return data
 
     def num_classes(self) -> List:
-        return [4, 4]
+        return [8, 5]
 
     def __len__(self) -> int:
         """
@@ -174,17 +174,31 @@ class Shapes:
         self.drawer = None
         self.size = size
 
-    def draw_circle(self, x, y, r):
-        fill = tuple([random.randint(1, 255) for _ in range(3)])
+    def draw_circle(self, x, y, r, low, upper):
+        fill = tuple([random.randint(low, upper) for _ in range(3)])
         self.drawer.ellipse((x - r, y - r, x + r, y + r), fill=fill)
 
-    def draw_rect(self, x, y, r):
-        fill = tuple([random.randint(1, 255) for _ in range(3)])
+    def draw_ellipse(self, x, y, r, low, upper):
+        fill = tuple([random.randint(low, upper) for _ in range(3)])
+        self.drawer.ellipse((x - 2 * r, y - r, x + 2 * r, y + r), fill=fill)
+
+    def draw_rect(self, x, y, r, low, upper):
+        fill = tuple([random.randint(low, upper) for _ in range(3)])
         self.drawer.rectangle((x - r, y - r, x + r, y + r), fill=fill)
 
-    def draw_poly(self, x, y, r):
-        fill = tuple([random.randint(1, 255) for _ in range(3)])
+    def draw_line(self, x, y, r, low, upper):
+        fill = tuple([random.randint(low, upper) for _ in range(3)])
+        self.drawer.rectangle((x - r, y - 2 * r, x + r, y + 2 * r), fill=fill)
+
+    def draw_triagnle(self, x, y, r, low, upper):
+        fill = tuple([random.randint(low, upper) for _ in range(3)])
         self.drawer.polygon([(x - r, y - r), (x, y + r), (x + r, y - r)], fill=fill)
+
+    def draw_poly(self, x, y, r, low, upper, sides):
+        fill = tuple([random.randint(low, upper) for _ in range(3)])
+        angle = 2 * np.pi / sides
+        points = [(x + r * np.cos(i * angle), y + r * np.sin(i * angle)) for i in range(sides)]
+        self.drawer.polygon(points, fill=fill)
 
     def draw(self, i):
         """
@@ -206,27 +220,48 @@ class Shapes:
 
         #
         boxes = []
-        for score_1 in range(1, 4):
-            x = random.randint(int(0.1 * self.size), int(0.9 * self.size))
-            y = random.randint(int(0.1 * self.size), int(0.9 * self.size))
-            r = random.randint(40, 50)
-            r_ = random.randint(15, 25)
-
-            if score_1 == 1:
-                self.draw_rect(x, y, r)
-            elif score_1 == 2:
-                self.draw_circle(x, y, r)
-            elif score_1 == 3:
-                self.draw_poly(x, y, r)
+        x, y = 0, 0
+        for score_1 in range(1, 8):
+            a = True
+            while a:
+                x = random.randint(int(0.05 * self.size), int(0.95 * self.size))
+                y = random.randint(int(0.05 * self.size), int(0.95 * self.size))
+                a = False
+                for _ in range(x - 50, x + 50):
+                    for __ in range(y - 50, y + 50):
+                        try:
+                            if img.getpixel((_, __))[0] != 0:
+                                a = True
+                                break
+                        except IndexError:
+                            pass
+                    if a:
+                        break
+            r = random.randint(50, 60)
+            r_ = random.randint(30, 35)
 
             score_2 = random.randint(1, 3)
-            if score_2 == 1:
-                self.draw_rect(x, y, r_)
-            elif score_2 == 2:
-                self.draw_circle(x, y, r_)
-            elif score_2 == 3:
-                self.draw_poly(x, y, r_)
+            boxes.append([x - r_, y - r_, x + r_, y + r_, score_1, score_2 + 1])
 
-            boxes.append([x - r_, y - r_, x + r_, y + r_, score_1, score_2])
+            fill = (200, 255)
+            if score_1 == 1:
+                self.draw_rect(x, y, r, fill[0], fill[1])
+            elif score_1 == 2:
+                self.draw_circle(x, y, r, fill[0], fill[1])
+            elif score_1 == 3:
+                self.draw_line(x, y, r, fill[0], fill[1])
+            elif score_1 == 4:
+                self.draw_ellipse(x, y, r, fill[0], fill[1])
+            elif score_1 == 5:
+                self.draw_triagnle(x, y, r, fill[0], fill[1])
+            else:
+                self.draw_poly(x, y, r, fill[0], fill[1], score_1)
+
+            if score_2 == 1:
+                self.draw_rect(x, y, r_, 10, 30)
+            elif score_2 == 2:
+                self.draw_circle(x, y, r_, 40, 60)
+            elif score_2 == 3:
+                self.draw_triagnle(x, y, r_, 70, 90)
 
         return np.array(img.convert("L")), np.array(boxes)

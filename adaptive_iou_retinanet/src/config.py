@@ -37,7 +37,7 @@ class Config:
         ###########################################
 
         # Choose the alpha and gamma parameters for the Focal Loss function
-        self.focalLoss_alpha = 0.75
+        self.focalLoss_alpha = 0.25
         self.focalLoss_gamma = 2
 
         ###########################################
@@ -45,10 +45,10 @@ class Config:
         ###########################################
 
         # Choose the learning rate for the optimizer
-        self.learning_rate = 10**-4
+        self.learning_rate = 10**-5
 
         # Choose the weight decay for the optimizer
-        self.weight_decay = 10**-6
+        self.weight_decay = 10**-8
 
         ###########################################
         #      Dataloader - DataTransformation    #
@@ -62,7 +62,7 @@ class Config:
             # The gamma value for adjusting the brightness of the image
             "gamma_contrast": (0.75, 1.25),
             # The probability of a pixel being dropped out
-            "dropout": 0.01,
+            "dropout": 0.05,
             # The probability of flipping the image vertically
             "flipud": None,
             # The degree of rotation in increments of 90 degrees

@@ -101,6 +101,7 @@ def change_box_order(boxes, order):
     b = boxes[:, 2:]
     if order == "xyxy2xywh":
         return torch.cat([(a + b) / 2, b - a + 1], 1)
+    b -= 1
     return torch.cat([a - b / 2, a + b / 2], 1)
 
 

@@ -8,20 +8,30 @@ The purpose of this modification is to remove patient filter criteria and provid
 
 ![](/assets/paper.png)
 
-### Test Dataset
-The test dataset used in this repository consists of images of circles with different sizes and brightness levels. 
-Each circle has two scores: score_1, determined based on the size of the circle, and score_2, determined based on the brightness of the circle. The RetinaNet model in this repository attempts to detect the circles based on both scores. In the original paper, score_1 was defined as the joint score and score_2 as the SvH score.
+### Test dataset
+The test dataset used in this repository consists of images of different shapes, where each shape consists of an outer and an inner shape. The outer shape (score_1) represents the environment (hence as in the paper the joint), while the inner shape (score_2) represents the aquivalent to erosion. In each image, each score_1 always occurs exactly once, whereas score_2 is random.
 
+Score_1 and score_2 are defined on the basis of the shape, whereas score_2 can only take the values 1 to 3:
+
+- 1 = rectangle
+- 2 = circle
+- 3 = line
+- 4 = ellipse
+- 5 = triangle
+- 6 = pentagon
+- 7 = Hexagon
+
+The RetinaNet model in this repository attempts to recognise the shapes based on both scores.
 #### Ground truth
 ![](/assets/gt_image.png)
 
-#### Prediction after 20 Epochs with adaptive adjustment after 20 Epochs
+#### Prediction after 20 Epochs with adaptive adjustment
 
-![](/assets/gt_image.png)
+![](/assets/with_adjustment.png)
 
-#### Prediction after 20 Epochs without adaptive
+#### Prediction after 20 Epochs without adaptive adjustment
 
-![](/assets/gt_image.png)
+![](/assets/without_adjustment.png)
 
 ### Installation
 To install the required dependencies for this repository, use the following command:
